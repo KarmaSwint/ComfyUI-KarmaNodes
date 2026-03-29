@@ -477,3 +477,64 @@ Thank you for being part of the ComfyUI-KarmaNodes community! 🙏
 ---
 
 **Note**: This node is designed for advanced users familiar with ComfyUI workflows. Basic knowledge of diffusion model sampling is recommended.
+
+---
+
+## Karma Before/After
+
+A professional image comparison node for creating publication-ready before/after visualizations. Perfect for showcasing post-processing effects, model comparisons, upscaling results, or any A/B comparison.
+
+### Layout Modes
+
+| Mode | Description |
+|------|-------------|
+| `side_by_side` | Images placed next to each other with an optional gap |
+| `split_horizontal` | Left/right split with a vertical divider (slider-style) |
+| `split_vertical` | Top/bottom split with a horizontal divider |
+| `blend` | Opacity crossfade between both images |
+
+### Parameters
+
+| Parameter | Type | Default | Range | Description |
+|-----------|------|---------|-------|-------------|
+| `before_image` | IMAGE | — | — | The "before" image input |
+| `after_image` | IMAGE | — | — | The "after" image input |
+| `mode` | COMBO | `split_horizontal` | 4 options | Layout mode for the comparison |
+| `split_position` | FLOAT | `0.5` | 0.0–1.0 | Position of the split/blend point |
+| `divider_width` | INT | `3` | 0–20 | Width of the divider line (0 = hidden) |
+| `divider_color` | COMBO | `white` | white/black/red/gray | Color of the divider line |
+| `show_labels` | COMBO | `none` | none/simple/outlined | Label overlay style |
+| `label_size` | COMBO | `medium` | small/medium/large | Size of the labels |
+| `gap_width` | INT | `4` | 0–100 | Gap between images in side-by-side mode |
+| `background_color` | COMBO | `black` | black/white/gray | Gap/background fill color |
+| `resize_mode` | COMBO | `match_before` | 4 options | How to handle mismatched image sizes |
+| `before_label` | STRING | `"Before"` | any text | Custom label for the before image |
+| `after_label` | STRING | `"After"` | any text | Custom label for the after image |
+
+### Resize Modes
+
+| Mode | Behavior |
+|------|----------|
+| `match_before` | Resize the after image to match the before image dimensions |
+| `match_after` | Resize the before image to match the after image dimensions |
+| `match_larger` | Resize both to the larger of the two dimensions |
+| `match_smaller` | Resize both to the smaller of the two dimensions |
+
+### Tips
+
+- **Split modes** include small triangular indicators at the divider edges for a polished slider look.
+- Use `outlined` labels for maximum readability over any background — they render white text with a dark outline.
+- The `blend` mode is great for spotting subtle differences — animate `split_position` from 0 to 1 to create a "wipe" effect.
+- Set `divider_width` to `0` for a seamless split without any visible line.
+- When comparing images of different sizes, `match_before` is usually the safest choice.
+
+### Workflow Example: Full Post-Processing Showcase
+
+```
+[Generate Image] → [Save as "Before"]
+                 → [Karma Film Emulation] → [Karma Lens FX] → [Karma Tone Curves]
+                 → [Save as "After"]
+
+[Before] + [After] → [Karma Before/After (split_horizontal, show_labels=outlined)]
+                   → [Preview / Save]
+```
