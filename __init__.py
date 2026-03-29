@@ -4,6 +4,7 @@ from .KarmaKolors import Karma_Kolors
 from .KarmaLensFX import Karma_Lens_FX
 from .KarmaToneCurves import Karma_Tone_Curves
 from .KarmaFilmEmulation import Karma_Film_Emulation
+from .KarmaBeforeAfter import Karma_Before_After
 
 NODE_CLASS_MAPPINGS = {
     "Karma-KSampler-Cycle": Karma_KSampler_Cycle,
@@ -12,6 +13,7 @@ NODE_CLASS_MAPPINGS = {
     "Karma-Lens-FX": Karma_Lens_FX,
     "Karma-Tone-Curves": Karma_Tone_Curves,
     "Karma-Film-Emulation": Karma_Film_Emulation,
+    "Karma-Before-After": Karma_Before_After,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -21,4 +23,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Karma-Lens-FX": "Karma Lens FX",
     "Karma-Tone-Curves": "Karma Tone Curves",
     "Karma-Film-Emulation": "Karma Film Emulation",
+    "Karma-Before-After": "Karma Before/After",
 }
