@@ -9,6 +9,9 @@ ComfyUI-KarmaNodes provides a comprehensive suite of nodes for advanced image ge
 - **Karma KSampler Cycle**: Specialized KSampler that performs multiple sampling cycles with progressive upscaling between cycles, enabling high-quality, high-resolution image generation with better detail preservation
 - **Karma Film Grain**: Professional film grain simulation for authentic analog film texture and cinematic aesthetics
 - **Karma Kolors**: Advanced color grading and correction tools for professional-grade color enhancement
+- **Karma Lens FX**: Realistic lens effect simulation — chromatic aberration, vignetting, barrel/pincushion distortion, and halation
+- **Karma Tone Curves**: Surgical tonal control — independent shadow/midtone/highlight adjustments, S-curve contrast, and split toning
+- **Karma Film Emulation**: One-click cinematic film stock emulation with 10 iconic presets from Kodak, Fuji, CineStill, and Ilford
 
 ## Features
 
@@ -35,6 +38,9 @@ ComfyUI-KarmaNodes provides a comprehensive suite of nodes for advanced image ge
 - **Sharpening Filter**: Optional unsharp mask filter between cycles
 - **Film Grain Effects**: Realistic analog film grain simulation
 - **Color Grading**: Professional color correction and enhancement
+- **Lens Effects**: Chromatic aberration, vignetting, distortion, and halation
+- **Tone Curves**: Independent shadow/midtone/highlight control with split toning
+- **Film Emulation**: One-click cinematic looks from iconic film stocks
 - **Tiled VAE Support**: Handle large images with tiled VAE processing
 - **Memory Management**: Automatic device management for optimal performance
 
@@ -228,6 +234,104 @@ Professional color grading and correction tools for precise image enhancement.
 - **Landscape Vibrancy**: Increase saturation (+5-10%) with slight contrast boost
 - **Vintage Look**: Warm temperature (3000K-4000K) with reduced saturation (-5-10%)
 
+### 🔍 Karma Lens FX
+
+Simulate real-world optical imperfections for authentic photographic character. Recreates the optical characteristics of physical camera lenses.
+
+#### Features
+- **Chromatic Aberration**: Color fringing that increases toward image edges, simulating lateral CA
+- **Vignetting**: Smooth radial edge darkening with adjustable falloff curve
+- **Lens Distortion**: Barrel (positive) and pincushion (negative) geometric distortion
+- **Halation**: Highlight bloom/glow effect that simulates light scatter in film and lenses
+- **Independent Controls**: Each effect can be dialed in precisely without affecting others
+
+#### Parameters
+- **Chromatic Aberration** (0-20): Color fringing strength in pixels
+- **Vignette Strength** (0-1): Edge darkening intensity
+- **Vignette Falloff** (0.5-5.0): Gradient steepness (higher = tighter bright center)
+- **Distortion** (-1 to 1): Barrel (+) or pincushion (-) distortion amount
+- **Halation Strength** (0-1): Highlight bloom intensity
+- **Halation Threshold** (0-1): Brightness level above which bloom is applied
+- **Halation Radius** (1-50): Spread of the bloom glow in pixels
+
+#### Usage Tips
+- **Subtle Realism**: Chromatic aberration 1-3, vignette 0.1-0.2 for natural lens character
+- **Vintage Lens Look**: Chromatic aberration 5-10, vignette 0.3-0.5, distortion 0.1-0.2
+- **Dreamy/Ethereal**: Halation strength 0.3-0.5 with lower threshold (0.6-0.7)
+- **Night Photography**: Halation strength 0.2-0.4 with high threshold (0.85-0.95) for light glow
+- **Cinematic**: Combine vignette (0.2-0.3) with subtle halation (0.1-0.2) for movie look
+
+### 📈 Karma Tone Curves
+
+Surgical tonal control with independent shadow, midtone, and highlight adjustments — like a simplified version of Lightroom's tone curve panel.
+
+#### Features
+- **Zone-Based Adjustments**: Independent shadow, midtone, and highlight brightness control
+- **S-Curve Contrast**: Midtone contrast adjustment for punchy or flat looks
+- **Black/White Point**: Clip shadows and highlights for controlled dynamic range
+- **Split Toning**: Independently tint shadows and highlights with any hue
+- **Smooth Transitions**: Cosine-weighted zone blending prevents banding
+
+#### Parameters
+- **Shadows** (-1 to 1): Shadow brightness (negative = crush blacks, positive = lift shadows)
+- **Midtones** (-1 to 1): Midtone brightness (gamma-like adjustment)
+- **Highlights** (-1 to 1): Highlight brightness (negative = recover, positive = blow out)
+- **Midtone Contrast** (-1 to 1): S-curve contrast (positive = punchier, negative = flatter)
+- **Black Point** (0-0.3): Raise the darkest level for a faded/matte look
+- **White Point** (0.7-1.0): Lower the brightest level to tame highlights
+- **Shadow Tint Hue** (0-1): Color hue for shadow tinting
+- **Shadow Tint Strength** (0-0.5): Intensity of shadow color tint
+- **Highlight Tint Hue** (0-1): Color hue for highlight tinting
+- **Highlight Tint Strength** (0-0.5): Intensity of highlight color tint
+
+#### Usage Tips
+- **Faded Film Look**: Black point 0.05-0.1, shadows +0.1, contrast -0.1
+- **Punchy Modern**: Midtone contrast +0.3-0.5, shadows -0.1
+- **Teal & Orange Split Tone**: Shadow tint hue 0.52, highlight tint hue 0.08, both at strength 0.1-0.15
+- **Matte Finish**: Black point 0.05-0.08, white point 0.92-0.95
+- **High Key**: Shadows +0.2, midtones +0.1, highlights +0.1
+
+### 🎞️ Karma Film Emulation
+
+One-click cinematic film stock emulation with 10 carefully calibrated presets. Each preset replicates the complete color science of an iconic analog film — color response, contrast curve, grain, and special characteristics.
+
+#### Supported Film Stocks
+
+**Color Negative:**
+| Film Stock | Character |
+|---|---|
+| **Kodak Portra 400** | Natural skin tones, soft contrast, warm pastels. Portrait gold standard. |
+| **Kodak Ektar 100** | Ultra-vivid colors, fine grain, high saturation. Landscape and travel. |
+| **Kodak Gold 200** | Warm, golden highlights, nostalgic everyday look. |
+| **Fuji Velvia 50** | Extreme saturation, deep contrast, vivid greens/blues. Landscape legend. |
+| **Fuji Pro 400H** | Soft pastels, airy skin tones, subtle greens. Wedding favorite. |
+| **Fuji Superia 400** | Cool tones, strong greens/blues, punchy contrast. Classic consumer film. |
+
+**Cinema:**
+| Film Stock | Character |
+|---|---|
+| **CineStill 800T** | Tungsten-balanced, teal shadows, warm highlights, halation on lights. Night photography icon. |
+| **Kodak Vision3 500T** | Professional cinema negative. Refined color, modern movie look. |
+
+**Black & White:**
+| Film Stock | Character |
+|---|---|
+| **Kodak Tri-X 400** | Rich tones, beautiful grain, deep blacks. Street photography legend. |
+| **Ilford HP5 Plus** | Smooth tones, moderate grain, excellent latitude. Versatile B&W workhorse. |
+
+#### Parameters
+- **Film Stock**: Select the film to emulate from the dropdown
+- **Intensity** (0-1.5): Blend strength (0 = original, 1 = full emulation, >1 = exaggerated)
+- **Grain Override** (-1 to 1): Override grain amount (-1 = use film's default, 0+ = custom)
+- **Seed** (0-2³¹-1): Random seed for reproducible grain patterns
+
+#### Usage Tips
+- **Natural Look**: Intensity 0.7-0.9 for believable film emulation
+- **Heavy Stylization**: Intensity 1.2-1.5 for exaggerated film character
+- **Clean Film Color**: Use grain override of 0 to get film color without grain
+- **CineStill Night Shots**: Works best with images that have bright light sources (halation glow)
+- **B&W Conversion**: Tri-X or HP5 presets automatically convert to monochrome with proper grain
+
 ### Post-Processing Workflow Examples
 
 #### Basic Enhancement Chain
@@ -253,6 +357,28 @@ Professional color grading and correction tools for precise image enhancement.
                    Contrast: +8%       Grain Size: 1.5
                    Saturation: -3%     Seed: 42
 ```
+
+#### Full Camera Simulation Pipeline
+```
+[Generated Image] → [Karma Tone Curves] → [Karma Kolors] → [Karma Lens FX] → [Karma Film Grain] → [Save Image]
+```
+Apply tonal adjustments first, then color grading, then optical effects, and finally grain — mimicking the order of a real camera and film pipeline.
+
+#### One-Click Film Emulation
+```
+[Generated Image] → [Karma Film Emulation] → [Save Image]
+                     ↓
+                   Film Stock: CineStill 800T
+                   Intensity: 0.85
+                   Grain Override: -1 (use default)
+```
+For quick cinematic looks without manual tuning.
+
+#### Stacked Precision + Emulation
+```
+[Generated Image] → [Karma Tone Curves] → [Karma Film Emulation] → [Karma Lens FX] → [Save Image]
+```
+Use Tone Curves for surgical adjustments, then Film Emulation for the overall look, and Lens FX for optical character.
 
 ## Requirements
 
@@ -310,6 +436,9 @@ Professional color grading and correction tools for precise image enhancement.
 - **Color corrections too harsh**: Use smaller adjustment increments (±1-3%)
 - **White balance not working**: Ensure temperature value is within 2000K-10000K range
 - **Scipy warning for film grain**: Install scipy for better grain quality: `pip install scipy`
+- **Lens FX chromatic aberration not visible**: Increase value above 2-3 for noticeable effect
+- **Tone Curves banding**: Use smaller adjustment values; the node uses smooth blending to minimize this
+- **Film Emulation too intense**: Lower the intensity slider to 0.6-0.8 for a more subtle look
 
 ## Contributing
 
