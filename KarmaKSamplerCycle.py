@@ -203,7 +203,7 @@ class Karma_KSampler_Cycle:
                 
                 # Upscaling Parameters
                 "upscale_factor": ("FLOAT", {"default":2.0, "min":0.1, "max":8.0, "step":0.1}),
-                "upscale_method": (["basic", "model"], {"default": "basic"}),
+                "upscale_method": (["basic", "model", "latent"], {"default": "basic", "tooltip": "basic = PIL image upscale, model = upscale model, latent = direct latent space resize (fastest, no VAE decode/encode)"}),
                 "scale_sampling": (["bilinear", "bicubic", "nearest", "lanczos"], {"tooltip": "Resampling method for image upscaling"}),
                 "latent_upscale_method": (["bilinear", "bicubic", "nearest", "lanczos"], {"default": "lanczos", "tooltip": "Resampling method for latent space upscaling"}),
                 "enable_gradual_upscaling": ("BOOLEAN", {"default": False, "tooltip": "Enable gradual upscaling with multiple intermediate steps"}),
@@ -542,6 +542,56 @@ class Karma_KSampler_Cycle:
 
             # Upscale between cycles (only during total_cycles, not all sampling cycles)
             if i < total_cycles - 1:
+                
+                # --- Latent Space Upscaling (fastest path, no VAE decode/encode) ---
+                if upscale_method == "latent":
+                    print(f"  Performing LATENT Upscale for next cycle (Pass {i+1}/{total_cycles})...")
+                    try:
+                        current_latent = samples[0]['samples'].to(target_device)
+                        _, c, lh, lw = current_latent.shape
+                        
+                        # Calculate target pixel dimensions using same progression as image upscaling
+                        upscale_progress = (i + 1) / upscale_cycles_needed
+                        cycle_target_width = int(initial_image_width + (final_target_width - initial_image_width) * upscale_progress)
+                        cycle_target_height = int(initial_image_height + (final_target_height - initial_image_height) * upscale_progress)
+                        
+                        # Convert pixel dimensions to latent dimensions (latent is 1/8 of pixel space)
+                        latent_target_width = cycle_target_width // 8
+                        latent_target_height = cycle_target_height // 8
+                        
+                        # Ensure minimum latent size
+                        latent_target_width = max(latent_target_width, 1)
+                        latent_target_height = max(latent_target_height, 1)
+                        
+                        # Map latent_upscale_method to torch interpolation mode
+                        interp_mode = latent_upscale_method
+                        if interp_mode == "lanczos":
+                            interp_mode = "bicubic"  # Closest torch equivalent (lanczos not supported by F.interpolate)
+                        
+                        print(f"    Latent: {lw}x{lh} -> {latent_target_width}x{latent_target_height} (pixel target: {cycle_target_width}x{cycle_target_height})")
+                        print(f"    Interpolation mode: {latent_upscale_method}" + (" (mapped to bicubic)" if latent_upscale_method == "lanczos" else ""))
+                        
+                        upscaled_latent = torch.nn.functional.interpolate(
+                            current_latent,
+                            size=(latent_target_height, latent_target_width),
+                            mode=interp_mode,
+                            antialias=interp_mode in ("bilinear", "bicubic")
+                        )
+                        
+                        latent_image_result = {"samples": upscaled_latent}
+                        print(f"    Upscaled latent shape: {upscaled_latent.shape}")
+                        
+                        # Sanity checks
+                        if torch.isnan(upscaled_latent).any(): print("    WARNING: Upscaled latent contains NaNs!")
+                        if torch.isinf(upscaled_latent).any(): print("    WARNING: Upscaled latent contains Infs!")
+                        
+                    except Exception as e:
+                        print(f"\n!!! ERROR: Failed during latent upscaling: {e}")
+                        print("!!! ERROR: Passing latent directly without upscaling.")
+                        latent_image_result = samples[0]
+                    continue  # Skip to next cycle (no decode/encode needed)
+                
+                # --- Pixel Space Upscaling (basic/model) ---
                 print(f"  Performing Image Upscale for next cycle (Pass {i+1}/{total_cycles})...")
                 
                 # 1. Decode Latent to Image
